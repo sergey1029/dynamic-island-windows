@@ -1,0 +1,588 @@
+<Window x:Class="DynamicIsland.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:DynamicIsland"
+        Title="Dynamic Island — настройки" Width="920" Height="640" MinWidth="780" MinHeight="480"
+        WindowStartupLocation="CenterScreen" Background="#161618" Foreground="White" Icon="Assets/icon.ico"
+        FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="13" UseLayoutRounding="True">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="Accent" Color="#0A84FF" />
+        <SolidColorBrush x:Key="CardBg" Color="#222225" />
+        <SolidColorBrush x:Key="Line" Color="#2E2E33" />
+        <SolidColorBrush x:Key="DimText" Color="#8E8E93" />
+        <SolidColorBrush x:Key="Control" Color="#2C2C2E" />
+        <SolidColorBrush x:Key="ControlHover" Color="#3A3A3C" />
+
+        <Style TargetType="TextBlock" x:Key="H1">
+            <Setter Property="FontFamily" Value="Segoe UI Variable Display, Segoe UI" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Sub">
+            <Setter Property="Foreground" Value="{StaticResource DimText}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,20" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="CardTitle">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style TargetType="TextBlock" x:Key="Hint">
+            <Setter Property="Foreground" Value="{StaticResource DimText}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+        </Style>
+
+        <Style TargetType="Border" x:Key="Card">
+            <Setter Property="Background" Value="{StaticResource CardBg}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="18,16" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+
+        <Style TargetType="Border" x:Key="Divider">
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="Margin" Value="0,14" />
+        </Style>
+
+        <!-- Пункт меню слева -->
+        <Style TargetType="RadioButton" x:Key="NavButton">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,0,2" />
+            <Setter Property="GroupName" Value="Nav" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Bd" Background="Transparent" CornerRadius="8" Height="38">
+                            <Grid>
+                                <Border x:Name="Bar" Width="3" Height="16" CornerRadius="1.5" Background="{StaticResource Accent}"
+                                        HorizontalAlignment="Left" Visibility="Collapsed" />
+                                <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center" />
+                                    <ContentPresenter Margin="14,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#26FFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#2C2C2E" />
+                                <Setter TargetName="Bar" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Переключатель -->
+        <Style TargetType="CheckBox" x:Key="Toggle">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="Track" Width="42" Height="22" CornerRadius="11" Background="#3A3A3C">
+                            <Ellipse x:Name="Knob" Width="16" Height="16" Fill="White" HorizontalAlignment="Left" Margin="3,0,0,0" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Track" Property="Background" Value="{StaticResource Accent}" />
+                                <Setter TargetName="Knob" Property="HorizontalAlignment" Value="Right" />
+                                <Setter TargetName="Knob" Property="Margin" Value="0,0,3,0" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Сегмент (вариант выбора в виде таблетки) -->
+        <Style TargetType="RadioButton" x:Key="Segment">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Bd" Background="{StaticResource Control}" CornerRadius="8" Padding="14,7"
+                                BorderThickness="1" BorderBrush="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHover}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1A0A84FF" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Accent}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Вариант с заголовком и описанием -->
+        <Style TargetType="RadioButton" x:Key="Option">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Bd" Background="{StaticResource Control}" CornerRadius="10" Padding="14,10"
+                                BorderThickness="1" BorderBrush="Transparent">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="18" Height="18" VerticalAlignment="Top" Margin="0,1,12,0">
+                                    <Ellipse x:Name="Ring" Stroke="#636366" StrokeThickness="1.5" />
+                                    <Ellipse x:Name="Dot" Width="8" Height="8" Fill="White" Visibility="Collapsed" />
+                                </Grid>
+                                <ContentPresenter Grid.Column="1" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource ControlHover}" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Accent}" />
+                                <Setter TargetName="Ring" Property="Fill" Value="{StaticResource Accent}" />
+                                <Setter TargetName="Ring" Property="Stroke" Value="{StaticResource Accent}" />
+                                <Setter TargetName="Dot" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox" x:Key="Input">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="CaretBrush" Value="White" />
+            <Setter Property="SelectionBrush" Value="{StaticResource Accent}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd" Background="#1A1A1C" BorderBrush="#3A3A3C" BorderThickness="1" CornerRadius="8" Padding="10,0">
+                            <Grid>
+                                <TextBlock x:Name="Placeholder" Text="{TemplateBinding Tag}" Foreground="#636366"
+                                           VerticalAlignment="Center" Visibility="Collapsed" IsHitTestVisible="False" />
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Accent}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="Primary">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="8" Padding="16,0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.85" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="Secondary" BasedOn="{StaticResource Primary}">
+            <Setter Property="Background" Value="{StaticResource Control}" />
+        </Style>
+
+        <Style TargetType="Button" x:Key="Link">
+            <Setter Property="Foreground" Value="{StaticResource Accent}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Тонкий тёмный скроллбар -->
+        <Style TargetType="Thumb" x:Key="ScrollThumb">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border CornerRadius="3" Background="#48484A" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="6" />
+            <Setter Property="MinWidth" Value="6" />
+            <Setter Property="Margin" Value="0,4,4,4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource ScrollThumb}" />
+                            </Track.Thumb>
+                        </Track>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Навигация -->
+        <Border Background="#1C1C1E" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="12,22,12,16">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,0,0,24">
+                    <Border Width="38" Height="16" CornerRadius="8" Background="Black" BorderBrush="#48484A" BorderThickness="1" VerticalAlignment="Center" />
+                    <TextBlock Text="Dynamic Island" FontSize="15" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+                <TextBlock DockPanel.Dock="Bottom" x:Name="VersionText" Foreground="{StaticResource DimText}" FontSize="11" Margin="12,0,0,0" />
+                <StackPanel>
+                    <RadioButton x:Name="NavGeneral" Style="{StaticResource NavButton}" Tag="&#xE713;" Content="Общие" IsChecked="True" Checked="Nav_Checked" />
+                    <RadioButton x:Name="NavAppearance" Style="{StaticResource NavButton}" Tag="&#xE790;" Content="Внешний вид" Checked="Nav_Checked" />
+                    <RadioButton x:Name="NavWeather" Style="{StaticResource NavButton}" Tag="&#xE753;" Content="Погода" Checked="Nav_Checked" />
+                    <RadioButton x:Name="NavCalendars" Style="{StaticResource NavButton}" Tag="&#xE787;" Content="Календари" Checked="Nav_Checked" />
+                    <RadioButton x:Name="NavNotifications" Style="{StaticResource NavButton}" Tag="&#xE8BD;" Content="Уведомления" Checked="Nav_Checked" />
+                    <RadioButton x:Name="NavAbout" Style="{StaticResource NavButton}" Tag="&#xE946;" Content="О программе" Checked="Nav_Checked" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <ScrollViewer x:Name="ContentScroll" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="36,28,36,28">
+                <!-- ширина контента до 720, прижат влево -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MaxWidth="720" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- ОБЩИЕ -->
+                <StackPanel x:Name="PageGeneral">
+                    <TextBlock Style="{StaticResource H1}" Text="Общие" />
+                    <TextBlock Style="{StaticResource Sub}" Text="Запуск, автоскрытие и горячая клавиша." />
+
+                    <Border Style="{StaticResource Card}">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardTitle}" Text="Запускать вместе с Windows" />
+                                <TextBlock Style="{StaticResource Hint}" Text="Остров появится сразу после входа в систему." />
+                            </StackPanel>
+                            <CheckBox x:Name="AutostartToggle" Style="{StaticResource Toggle}" Click="Autostart_Click" />
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Автоскрытие" />
+                            <TextBlock Style="{StaticResource Hint}" Margin="0,2,0,12"
+                                       Text="Когда прятать остров. Показать спрятанный остров можно, наведя мышь в центр верхнего края экрана или горячей клавишей." />
+                            <StackPanel x:Name="AutoHideOptions">
+                                <RadioButton Style="{StaticResource Option}" GroupName="AutoHide" Tag="AnyWindow" Checked="AutoHide_Checked">
+                                    <StackPanel>
+                                        <TextBlock Text="При любом открытом окне" FontWeight="SemiBold" />
+                                        <TextBlock Style="{StaticResource Hint}" Text="Остров виден только на рабочем столе." />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Style="{StaticResource Option}" GroupName="AutoHide" Tag="Overlap" Checked="AutoHide_Checked">
+                                    <StackPanel>
+                                        <TextBlock Text="Когда окно заходит под остров" FontWeight="SemiBold" />
+                                        <TextBlock Style="{StaticResource Hint}" Text="Удобно на широких мониторах: маленькие окна по бокам не мешают." />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Style="{StaticResource Option}" GroupName="AutoHide" Tag="Maximized" Checked="AutoHide_Checked">
+                                    <StackPanel>
+                                        <TextBlock Text="Только при развёрнутых окнах" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Style="{StaticResource Option}" GroupName="AutoHide" Tag="Fullscreen" Checked="AutoHide_Checked">
+                                    <StackPanel>
+                                        <TextBlock Text="Только в полноэкранных приложениях" FontWeight="SemiBold" />
+                                        <TextBlock Style="{StaticResource Hint}" Text="Игры, видео на весь экран, презентации." />
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Style="{StaticResource Option}" GroupName="AutoHide" Tag="Off" Checked="AutoHide_Checked">
+                                    <StackPanel>
+                                        <TextBlock Text="Никогда" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </RadioButton>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <Grid>
+                                <StackPanel Margin="0,0,220,0">
+                                    <TextBlock Style="{StaticResource CardTitle}" Text="Горячая клавиша" />
+                                    <TextBlock Style="{StaticResource Hint}"
+                                               Text="Нажмите — остров откроется. Зажмите — будет виден, пока держите клавиши." />
+                                </StackPanel>
+                                <TextBox x:Name="HotkeyBox" Style="{StaticResource Input}" Width="200" HorizontalAlignment="Right"
+                                         IsReadOnly="True" Cursor="Hand" IsReadOnlyCaretVisible="False" Tag="Нажмите сочетание…"
+                                         GotKeyboardFocus="HotkeyBox_GotFocus" LostKeyboardFocus="HotkeyBox_LostFocus"
+                                         PreviewKeyDown="HotkeyBox_PreviewKeyDown" />
+                            </Grid>
+                            <TextBlock x:Name="HotkeyStatus" Style="{StaticResource Hint}" HorizontalAlignment="Right" Margin="0,6,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <Grid>
+                            <StackPanel Margin="0,0,180,0">
+                                <TextBlock Style="{StaticResource CardTitle}" Text="Отступ сверху" />
+                                <TextBlock Style="{StaticResource Hint}" Text="Расстояние от верхнего края экрана до острова." />
+                            </StackPanel>
+                            <local:NumberBox Tag="TopOffset" Minimum="0" Maximum="60" Step="1" Suffix=" px" ValueChanged="Number_Changed" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- ВНЕШНИЙ ВИД -->
+                <StackPanel x:Name="PageAppearance" Visibility="Collapsed">
+                    <TextBlock Style="{StaticResource H1}" Text="Внешний вид" />
+                    <TextBlock Style="{StaticResource Sub}" Text="Стиль часов на главной странице острова. Изменения видны сразу." />
+                    <WrapPanel x:Name="ClockStyleList" />
+                </StackPanel>
+
+                <!-- ПОГОДА -->
+                <StackPanel x:Name="PageWeather" Visibility="Collapsed">
+                    <TextBlock Style="{StaticResource H1}" Text="Погода" />
+                    <TextBlock Style="{StaticResource Sub}" Text="Данные Open-Meteo — бесплатно и без регистрации." />
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Город" />
+                            <TextBlock x:Name="CurrentCityText" Style="{StaticResource Hint}" Margin="0,2,0,12" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="CitySearchBox" Style="{StaticResource Input}" Tag="Например, Санкт-Петербург" KeyDown="CitySearchBox_KeyDown" />
+                                <Button x:Name="CitySearchButton" Grid.Column="1" Style="{StaticResource Primary}" Content="Найти" Margin="8,0,0,0" Click="CitySearch_Click" />
+                            </Grid>
+                            <TextBlock x:Name="CitySearchStatus" Style="{StaticResource Hint}" Margin="0,8,0,0" Visibility="Collapsed" />
+                            <StackPanel x:Name="CityResults" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardTitle}" Text="Единицы" />
+                                <TextBlock Style="{StaticResource Hint}" Text="В чём показывать температуру." />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <RadioButton x:Name="UnitCelsius" Style="{StaticResource Segment}" GroupName="Unit" Content="°C" Tag="celsius" Margin="0,0,6,0" Checked="Unit_Checked" />
+                                <RadioButton x:Name="UnitFahrenheit" Style="{StaticResource Segment}" GroupName="Unit" Content="°F" Tag="fahrenheit" Margin="0" Checked="Unit_Checked" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock x:Name="WeatherPreviewIcon" FontFamily="Segoe UI Emoji" FontSize="30" VerticalAlignment="Center" />
+                                <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock x:Name="WeatherPreviewTemp" FontSize="22" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="WeatherPreviewText" Style="{StaticResource Hint}" />
+                                </StackPanel>
+                            </StackPanel>
+                            <Button Style="{StaticResource Secondary}" Content="Обновить" HorizontalAlignment="Right" VerticalAlignment="Center" Click="WeatherRefresh_Click" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- КАЛЕНДАРИ -->
+                <StackPanel x:Name="PageCalendars" Visibility="Collapsed">
+                    <TextBlock Style="{StaticResource H1}" Text="Календари" />
+                    <TextBlock Style="{StaticResource Sub}" Text="Ближайшие события показываются на острове, а за несколько минут до начала приходит напоминание." />
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Подключённые календари" />
+                            <TextBlock x:Name="CalendarsEmpty" Style="{StaticResource Hint}" Margin="0,6,0,0" Text="Пока ничего не подключено." />
+                            <StackPanel x:Name="CalendarsList" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Подключить календарь" />
+                            <TextBlock Style="{StaticResource Hint}" Margin="0,2,0,12" Text="Выберите сервис — покажем, где взять ссылку." />
+                            <WrapPanel x:Name="ServiceButtons" Margin="0,0,0,6" />
+
+                            <Border Background="#1A1A1C" CornerRadius="10" Padding="14,12" Margin="0,4,0,14">
+                                <StackPanel>
+                                    <TextBlock x:Name="ServiceHelp" TextWrapping="Wrap" LineHeight="20" />
+                                    <Button x:Name="ServiceOpenButton" Style="{StaticResource Link}" Margin="0,8,0,0" Click="ServiceOpen_Click">
+                                        <TextBlock x:Name="ServiceOpenText" />
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock Text="Название" FontSize="12" Foreground="{StaticResource DimText}" Margin="0,0,0,4" />
+                            <TextBox x:Name="CalendarNameBox" Style="{StaticResource Input}" Tag="Например, Работа" />
+                            <TextBlock Text="Ссылка iCal" FontSize="12" Foreground="{StaticResource DimText}" Margin="0,12,0,4" />
+                            <TextBox x:Name="CalendarUrlBox" Style="{StaticResource Input}" Tag="https://… или webcal://…" />
+                            <TextBlock Text="Цвет" FontSize="12" Foreground="{StaticResource DimText}" Margin="0,12,0,6" />
+                            <StackPanel x:Name="ColorSwatches" Orientation="Horizontal" />
+
+                            <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                                <Button x:Name="AddCalendarButton" Style="{StaticResource Primary}" Content="Проверить и подключить" Click="AddCalendar_Click" />
+                                <TextBlock x:Name="CalendarStatus" VerticalAlignment="Center" Margin="12,0,0,0" TextWrapping="Wrap" MaxWidth="380" FontSize="12" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <Grid>
+                            <StackPanel Margin="0,0,180,0">
+                                <TextBlock Style="{StaticResource CardTitle}" Text="Напоминать о событиях" />
+                                <TextBlock Style="{StaticResource Hint}" Text="За сколько минут до начала показать напоминание." />
+                            </StackPanel>
+                            <local:NumberBox Tag="ReminderMinutes" Minimum="1" Maximum="120" Step="5" Suffix=" мин" ValueChanged="Number_Changed" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- УВЕДОМЛЕНИЯ -->
+                <StackPanel x:Name="PageNotifications" Visibility="Collapsed">
+                    <TextBlock Style="{StaticResource H1}" Text="Уведомления" />
+                    <TextBlock Style="{StaticResource Sub}" Text="Что и как долго показывает остров." />
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <Grid>
+                                <StackPanel Margin="0,0,180,0">
+                                    <TextBlock Style="{StaticResource CardTitle}" Text="Длительность уведомления" />
+                                    <TextBlock Style="{StaticResource Hint}" Text="Сколько секунд уведомление висит на острове." />
+                                </StackPanel>
+                                <local:NumberBox Tag="NotificationSeconds" Minimum="2" Maximum="30" Step="1" Suffix=" с" ValueChanged="Number_Changed" />
+                            </Grid>
+                            <Border Style="{StaticResource Divider}" />
+                            <Grid>
+                                <StackPanel Margin="0,0,80,0">
+                                    <TextBlock Style="{StaticResource CardTitle}" Text="Показывать смену трека" />
+                                    <TextBlock Style="{StaticResource Hint}" Text="Короткая всплывашка с названием новой песни." />
+                                </StackPanel>
+                                <CheckBox Style="{StaticResource Toggle}" Tag="ShowTrackChanges" Click="Toggle_Click" />
+                            </Grid>
+                            <Border Style="{StaticResource Divider}" />
+                            <Grid>
+                                <StackPanel Margin="0,0,180,0">
+                                    <TextBlock Style="{StaticResource CardTitle}" Text="Плеер после паузы" />
+                                    <TextBlock Style="{StaticResource Hint}" Text="Сколько секунд компактный плеер остаётся на острове после паузы." />
+                                </StackPanel>
+                                <local:NumberBox Tag="PausedMusicSeconds" Minimum="0" Maximum="600" Step="10" Suffix=" с" ValueChanged="Number_Changed" />
+                            </Grid>
+                            <Border Style="{StaticResource Divider}" />
+                            <Grid>
+                                <StackPanel Margin="0,0,80,0">
+                                    <TextBlock Style="{StaticResource CardTitle}" Text="Поверх полноэкранных приложений" />
+                                    <TextBlock Style="{StaticResource Hint}" Text="Показывать уведомления в играх и видео на весь экран. Сигнал таймера показывается всегда." />
+                                </StackPanel>
+                                <CheckBox Style="{StaticResource Toggle}" Tag="ShowEventsInFullscreen" Click="Toggle_Click" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Индикаторы" Margin="0,0,0,10" />
+                            <Grid>
+                                <TextBlock Text="Громкость" VerticalAlignment="Center" />
+                                <CheckBox Style="{StaticResource Toggle}" Tag="ShowVolume" Click="Toggle_Click" />
+                            </Grid>
+                            <Border Style="{StaticResource Divider}" />
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="Яркость" />
+                                    <TextBlock Style="{StaticResource Hint}" Text="Только для встроенного экрана ноутбука." />
+                                </StackPanel>
+                                <CheckBox Style="{StaticResource Toggle}" Tag="ShowBrightness" Click="Toggle_Click" />
+                            </Grid>
+                            <Border Style="{StaticResource Divider}" />
+                            <Grid>
+                                <TextBlock Text="Подключение зарядки" VerticalAlignment="Center" />
+                                <CheckBox Style="{StaticResource Toggle}" Tag="ShowCharging" Click="Toggle_Click" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Style="{StaticResource Secondary}" Content="Отправить тестовое уведомление" HorizontalAlignment="Left" Click="TestNotification_Click" />
+                </StackPanel>
+
+                <!-- О ПРОГРАММЕ -->
+                <StackPanel x:Name="PageAbout" Visibility="Collapsed">
+                    <TextBlock Style="{StaticResource H1}" Text="О программе" />
+                    <TextBlock Style="{StaticResource Sub}" Text="Dynamic Island для Windows." />
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Файлы" />
+                            <TextBlock x:Name="FolderText" Style="{StaticResource Hint}" Margin="0,2,0,12" />
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource Secondary}" Content="Открыть папку настроек" Click="OpenFolder_Click" />
+                                <Button Style="{StaticResource Secondary}" Content="Открыть лог" Margin="8,0,0,0" Click="OpenLog_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Подсказки" />
+                            <TextBlock Style="{StaticResource Hint}" LineHeight="20"
+                                       Text="• Наведите на остров — он раскроется.&#10;• Колесо мыши листает страницы: плеер, главная, календарь, таймер, полка.&#10;• Перетащите файл на остров, чтобы положить его на полку.&#10;• Правый клик по острову — быстрое меню." />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>
