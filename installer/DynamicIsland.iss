@@ -33,6 +33,7 @@ MinVersion=10.0.19041
 OutputDir=..\dist
 OutputBaseFilename=DynamicIsland-Setup-{#MyAppVersion}
 SetupIconFile=..\Assets\icon.ico
+LicenseFile=..\LICENSE
 UninstallDisplayIcon={app}\{#MyAppExe}
 UninstallDisplayName={#MyAppName}
 WizardStyle=modern
@@ -64,6 +65,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\publish\{#MyAppExe}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"

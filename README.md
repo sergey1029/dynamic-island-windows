@@ -9,6 +9,7 @@
 [![Скачать](https://img.shields.io/github/v/release/sergey1029/dynamic-island-windows?label=%D0%A1%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C&style=for-the-badge&color=0A84FF)](https://github.com/sergey1029/dynamic-island-windows/releases/latest)
 ![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-5E5CE6?style=for-the-badge&logo=windows)
 ![.NET 9](https://img.shields.io/badge/.NET-9-512BD4?style=for-the-badge&logo=dotnet)
+[![MIT](https://img.shields.io/badge/%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F-MIT-30D158?style=for-the-badge)](LICENSE)
 
 <img src="docs/screenshots/hero.png" alt="Dynamic Island для Windows" />
 
@@ -164,3 +165,7 @@ installer/       скрипт Inno Setup
 ```
 
 Настройки и лог хранятся в `%AppData%\DynamicIsland\`.
+
+## 📄 Лицензия
+
+[MIT](LICENSE): код можно свободно использовать, менять и распространять, в том числе в коммерческих проектах, если сохраняется уведомление об авторских правах.
