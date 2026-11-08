@@ -557,6 +557,14 @@
                         </StackPanel>
                     </Border>
 
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Не приходят уведомления из какого-то приложения?" />
+                            <TextBlock Style="{StaticResource Hint}" LineHeight="20" Margin="0,4,0,0"
+                                       Text="Остров видит только системные уведомления Windows. Некоторые программы по умолчанию рисуют свои всплывающие окошки — их перехватить нельзя. Включите в них системные уведомления:&#10;• Telegram: Настройки → Уведомления и звуки → «Использовать уведомления Windows».&#10;• Также проверьте, что приложению разрешены уведомления: Параметры Windows → Система → Уведомления." />
+                        </StackPanel>
+                    </Border>
+
                     <Button Style="{StaticResource Secondary}" Content="Отправить тестовое уведомление" HorizontalAlignment="Left" Click="TestNotification_Click" />
                 </StackPanel>
 
