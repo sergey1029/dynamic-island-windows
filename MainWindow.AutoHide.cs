@@ -143,7 +143,7 @@ public partial class MainWindow
     bool InIslandZone(Point cursor, double margin)
     {
         double centerX = Left + Width / 2;
-        double top = Top + _settings.TopOffset;
+        double top = Top + TopOffset;
         return cursor.X >= centerX - _targetWidth / 2 - margin && cursor.X <= centerX + _targetWidth / 2 + margin
             && cursor.Y >= Top && cursor.Y <= top + _targetHeight + margin;
     }
@@ -157,6 +157,7 @@ public partial class MainWindow
         bool hide = _settings.AutoHide.ToLowerInvariant() switch
         {
             "off" => false,
+            _ when _docked => state.Kind == ForegroundKind.Fullscreen,
             "fullscreen" => state.Kind == ForegroundKind.Fullscreen,
             "maximized" => state.Kind >= ForegroundKind.Maximized,
             "overlap" => state.Kind >= ForegroundKind.Maximized || (state.Kind == ForegroundKind.Window && OverlapsIsland(state.Bounds)),
@@ -171,7 +172,7 @@ public partial class MainWindow
     {
         double centerX = (Left + Width / 2) * _dpiX;
         double halfWidth = (ExpandedWidth / 2 + 10) * _dpiX;
-        double bottom = (Top + _settings.TopOffset + CompactHeight + 10) * _dpiY;
+        double bottom = (Top + TopOffset + CompactHeight + 10) * _dpiY;
         return r.Left < centerX + halfWidth && r.Right > centerX - halfWidth && r.Top < bottom;
     }
 
@@ -198,7 +199,7 @@ public partial class MainWindow
             var ease = new CubicEase { EasingMode = EasingMode.EaseInOut };
             HideScale.BeginAnimation(ScaleTransform.ScaleXProperty, new DoubleAnimation(0.3, duration) { EasingFunction = ease });
             HideScale.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation(0.1, duration) { EasingFunction = ease });
-            HideShift.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(-_settings.TopOffset - 2, duration) { EasingFunction = ease });
+            HideShift.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(-TopOffset - 2, duration) { EasingFunction = ease });
             ContentRoot.BeginAnimation(OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(150)));
             IslandHost.BeginAnimation(OpacityProperty, new DoubleAnimation(0, TimeSpan.FromMilliseconds(160))
             {

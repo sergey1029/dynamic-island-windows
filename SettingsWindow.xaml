@@ -377,7 +377,7 @@
                         <Grid>
                             <StackPanel Margin="0,0,180,0">
                                 <TextBlock Style="{StaticResource CardTitle}" Text="Отступ сверху" />
-                                <TextBlock Style="{StaticResource Hint}" Text="Расстояние от верхнего края экрана до острова." />
+                                <TextBlock Style="{StaticResource Hint}" Text="Расстояние от верхнего края экрана до острова. Не действует, когда остров встроен в строку меню Custom UI." />
                             </StackPanel>
                             <local:NumberBox Tag="TopOffset" Minimum="0" Maximum="60" Step="1" Suffix=" px" ValueChanged="Number_Changed" />
                         </Grid>

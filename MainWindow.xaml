@@ -168,6 +168,12 @@
                 </ContextMenu>
             </Grid.ContextMenu>
 
+            <!-- «Ушки» выреза: встроенный в строку меню Custom UI остров плавно переходит в верхний край -->
+            <Path x:Name="EarLeft" Data="M0,0 L8,0 L8,8 A8,8 0 0 0 0,0 Z" Fill="Black" Width="8" Height="8" Margin="-8,0,0,0"
+                  HorizontalAlignment="Left" VerticalAlignment="Top" IsHitTestVisible="False" Visibility="Collapsed" />
+            <Path x:Name="EarRight" Data="M0,0 L8,0 A8,8 0 0 0 0,8 Z" Fill="Black" Width="8" Height="8" Margin="0,0,-8,0"
+                  HorizontalAlignment="Right" VerticalAlignment="Top" IsHitTestVisible="False" Visibility="Collapsed" />
+
             <Border x:Name="IslandBg" Background="Black" CornerRadius="17">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="18" ShadowDepth="3" Direction="270" Opacity="0.45" Color="Black" />

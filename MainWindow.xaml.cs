@@ -23,7 +23,6 @@ public enum IslandPage
 /// <summary>Ядро острова: состояния, размеры, переключение панелей.</summary>
 public partial class MainWindow : Window
 {
-    const double CompactHeight = 34;
     const double ExpandedWidth = 440;
 
     readonly MediaService _media = new();
@@ -114,6 +113,7 @@ public partial class MainWindow : Window
         RenderShelf();
         RenderCalendar();
         InitAutoHide();
+        CheckMenuBar();
         UpdateIsland();
         OnTick();
         _tick.Start();
@@ -177,7 +177,7 @@ public partial class MainWindow : Window
     {
         Left = (SystemParameters.PrimaryScreenWidth - Width) / 2;
         Top = 0;
-        IslandHost.Margin = new Thickness(0, _settings.TopOffset, 0, 0);
+        IslandHost.Margin = new Thickness(0, TopOffset, 0, 0);
     }
 
     void KeepOnTop() =>
@@ -387,9 +387,7 @@ public partial class MainWindow : Window
     void IslandHost_SizeChanged(object sender, SizeChangedEventArgs e)
     {
         double w = e.NewSize.Width, h = e.NewSize.Height;
-        double r = Math.Min(h / 2, 30);
-        IslandBg.CornerRadius = new CornerRadius(r);
-        ContentRoot.Clip = new RectangleGeometry(new Rect(0, 0, w, h), r, r);
+        UpdateShape(w, h);
     }
 
     void OnTick()
@@ -402,6 +400,7 @@ public partial class MainWindow : Window
 
         if (_tickCount % 4 == 0) CheckCharging();
         if (_tickCount % 8 == 1 && Expanded) UpdateSystemInfo();
+        if (_tickCount % 4 == 2) CheckMenuBar();
         if (_tickCount % 20 == 0) KeepOnTop();
         if (_tickCount % 60 == 0) CheckReminders();
         if (_tickCount % 240 == 0) RenderCalendar();
