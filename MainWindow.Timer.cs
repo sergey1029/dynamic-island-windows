@@ -15,6 +15,7 @@ public partial class MainWindow
     {
         var stopwatch = _timers.StopwatchElapsed;
         StopwatchText.Text = FormatStopwatch(stopwatch);
+        HookStopwatchFrames(_timers.StopwatchRunning);
         StopwatchToggle.Content = _timers.StopwatchRunning ? "" : "";
 
         var remaining = _timers.CountdownRemaining;
@@ -49,7 +50,25 @@ public partial class MainWindow
     }
 
     static string FormatStopwatch(TimeSpan t) =>
-        t.TotalHours >= 1 ? t.ToString(@"h\:mm\:ss") : $"{(int)t.TotalMinutes}:{t.Seconds:00}.{t.Milliseconds / 100}";
+        t.TotalHours >= 1 ? t.ToString(@"h\:mm\:ss") : $"{(int)t.TotalMinutes}:{t.Seconds:00},{t.Milliseconds / 10:00}";
+
+    bool _stopwatchFramesHooked;
+
+    /// <summary>Пока секундомер идёт, обновляем цифры каждый кадр, а не раз в 250 мс — без рывков.</summary>
+    void HookStopwatchFrames(bool running)
+    {
+        if (running == _stopwatchFramesHooked) return;
+        _stopwatchFramesHooked = running;
+        if (running) CompositionTarget.Rendering += OnStopwatchFrame;
+        else CompositionTarget.Rendering -= OnStopwatchFrame;
+    }
+
+    void OnStopwatchFrame(object? sender, EventArgs e)
+    {
+        var text = FormatStopwatch(_timers.StopwatchElapsed);
+        if (StopwatchText.Text != text) StopwatchText.Text = text;
+        if (_timers.CountdownState == CountdownState.Idle && TimerCompactText.Text != text) TimerCompactText.Text = text;
+    }
 
     static string FormatCountdown(TimeSpan t)
     {
